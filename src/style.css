@@ -574,3 +574,201 @@ form  {
   font-family: 'Orbitron', sans-serif;
   font-size: 50px;
 }
+
+/* ===== Fondo oscuro y efecto de desenfoque ===== */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* ===== Panel lateral ===== */
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 90%;
+  height: 100vh;
+  background: linear-gradient(160deg, #111 0%, #1a1a1a 100%);
+  box-shadow: -3px 0 20px rgba(0, 255, 157, 0.2);
+  border-left: 2px solid #00ff9d;
+  z-index: 999;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: translateX(100%);
+  animation: slideIn 0.4s ease forwards;
+}
+
+/* ===== Encabezado ===== */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.sidebar-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  color: #00ff9d;
+}
+
+.btn-close-sidebar {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.btn-close-sidebar:hover {
+  color: #00ff9d;
+}
+
+/* ===== Cuerpo del formulario ===== */
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #00ff9d #111;
+}
+
+.sidebar-body::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-body::-webkit-scrollbar-thumb {
+  background-color: #00ff9d;
+  border-radius: 4px;
+}
+
+.form-label {
+  color: #e0e0e0;
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 5px;
+}
+
+.sidebar-input {
+  background: #121212;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.sidebar-input:focus {
+  outline: none;
+  border-color: #00ff9d;
+  box-shadow: 0 0 10px rgba(0, 255, 157, 0.4);
+}
+
+/* ===== Textos auxiliares ===== */
+.sidebar-hint {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.sidebar-forgot a {
+  color: #d774ff;
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sidebar-forgot a:hover {
+  color: #f09dff;
+}
+
+/* ===== Botones ===== */
+.btn-neon-green {
+  background: #00ff9d;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-family: 'Orbitron', sans-serif;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-neon-green:hover {
+  background: #00e58c;
+  box-shadow: 0 0 15px #00ff9d;
+}
+
+.btn-link-neon {
+  background: none;
+  border: none;
+  color: #00ff9d;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.btn-link-neon:hover {
+  color: #00ffa6;
+}
+
+/* ===== Pie del formulario ===== */
+.sidebar-footer {
+  text-align: center;
+  color: #8d8d8d;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* ===== Animaciones ===== */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 500px) {
+  .sidebar-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 2px solid #00ff9d;
+    animation: slideUp 0.4s ease forwards;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
