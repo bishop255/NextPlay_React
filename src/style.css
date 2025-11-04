@@ -769,4 +769,23 @@ form  {
   }
 }
 
+.btn-neon-red {
+  background: #ff1744;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  padding: 8px 22px;
+  font-weight: bold;
+  box-shadow: 0 0 10px #ff1744, 0 0 20px #ff1744;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.btn-neon-red:hover {
+  background: linear-gradient(45deg, #ff1744 70%, #ffee58 140%);
+  color: #121212;
+}
+
+
 

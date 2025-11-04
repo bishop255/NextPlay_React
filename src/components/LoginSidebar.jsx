@@ -1,19 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
+const initialLoginForm = {
+  username: "",
+  password: "",
+};
 
-export const LoginSidebar = ({ isOpen, onClose, OnSwitchToRegistro }) => {
-  const [form, setForm] = useState({ email: "", password: "", remember: false });
+export const LoginSidebar = ({ isOpen, onClose, handlerLogin, onSwitchToRegistro }) => {
+  const [loginForm, setLoginForm] = useState(initialLoginForm);
+  const { username, password } = loginForm;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.email || !form.password) {
-      alert("Ingrese email y contraseña");
+  // Maneja cambios en inputs actualizado estado
+  const onInputChange = ({ target }) => {
+    const { name, value } = target;
+    setLoginForm({ ...loginForm, [name]: value });
+  };
+
+  // Al enviar el formulario
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    // Validación sencilla con SweetAlert
+    if (!username || !password) {
+      Swal.fire("Error de validación", "Username y password requeridos", "error");
       return;
     }
-    alert("Bienvenido de vuelta amigo gamer!");
+
+    // Ejecuta login real (pass handler desde padre)
+    handlerLogin({ username, password });
+
+    // Limpia formulario y cierra sidebar
+    setLoginForm(initialLoginForm);
     onClose();
   };
 
+  // No renderiza si el sidebar está cerrado
   if (!isOpen) return null;
 
   return (
@@ -21,63 +42,45 @@ export const LoginSidebar = ({ isOpen, onClose, OnSwitchToRegistro }) => {
       <div className="sidebar-overlay" onClick={onClose}></div>
       <div className="sidebar-panel">
         <div className="sidebar-header">
-          <h2>Bienvenido Gamer!</h2>
+          <h2 style={{ fontFamily: "Orbitron", color: "#00ff9d", margin: 0 }}>Iniciar Sesión</h2>
           <button className="btn-close-sidebar" onClick={onClose}>
             ✕
           </button>
         </div>
-
         <div className="sidebar-body">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={onSubmit}>
             <div className="mb-3">
-              <label className="form-label">Email</label>
+              <label className="form-label">Usuario</label>
               <input
-                type="email"
-                className="sidebar-input"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                required
-                placeholder="example@email.com"
+                name="username"
+                placeholder="Username"
+                className="form-control sidebar-input"
+                value={username}
+                onChange={onInputChange}
               />
-              <div className="sidebar-hint">Nunca compartiremos tu correo</div>
             </div>
-
             <div className="mb-3">
               <label className="form-label">Contraseña</label>
               <input
+                name="password"
                 type="password"
-                className="sidebar-input"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                required
-                placeholder="••••••••"
+                placeholder="Password"
+                className="form-control sidebar-input"
+                value={password}
+                onChange={onInputChange}
               />
-              <div className="sidebar-forgot">
-                <a href="#">¿Olvidaste tu contraseña?</a>
-              </div>
             </div>
-
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                checked={form.remember}
-                onChange={(e) => setForm({ ...form, remember: e.target.checked })}
-              />
-              <label className="form-check-label">Mantenerme conectado</label>
-            </div>
-
-            <button type="submit" className="btn-neon-green">
+            <button type="submit" className="btn-neon-green w-100 mb-3">
               Iniciar Sesión
             </button>
-
-            <div className="sidebar-footer">
-              ¿No tienes cuenta?{""}
-              <button type="button" className="btn-link-neon" onClick={OnSwitchToRegistro}>
-                Regístrate aquí
-              </button>
-            </div>
           </form>
+
+          <div className="sidebar-footer">
+            ¿No tienes cuenta?{" "}
+            <button type="button" className="btn-link-neon" onClick={onSwitchToRegistro}>
+              Regístrate aquí
+            </button>
+          </div>
         </div>
       </div>
     </>
