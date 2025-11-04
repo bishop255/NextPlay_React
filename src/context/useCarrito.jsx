@@ -8,7 +8,7 @@ export const useCarrito = () => {
   return context;
 };
 
-export const CarritoProvider = ({ children }) => {
+export const CarritoProvider = ({ children, onNotify }) => {
   const [carrito, setCarrito] = useState([]);
 
   useEffect(() => {
@@ -20,20 +20,48 @@ export const CarritoProvider = ({ children }) => {
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
-  const anadirAlCarrito = (nombre, precio) => {
-    const existe = carrito.find(p => p.nombre === nombre);
-    if (existe && !window.confirm('El juego ya existe. ¿Agregar de nuevo?')) return;
-    setCarrito([...carrito, { nombre, precio: Number(precio) }]);
-    alert('Se agregó "' + nombre + '" al carrito ✅');
+  // Añadir producto al carrito, aumentando cantidad si existe
+  const anadirAlCarrito = (id, nombre, precio) => {
+    const index = carrito.findIndex(p => p.id === id);
+    if (index !== -1) {
+      // Producto ya existe, aumentar cantidad
+      const nuevoCarrito = [...carrito];
+      nuevoCarrito[index].cantidad += 1;
+      setCarrito(nuevoCarrito);
+      onNotify && onNotify(`Cantidad incrementada de "${nombre}" ✅`);
+    } else {
+      // Nuevo producto
+      setCarrito([...carrito, { id, nombre, precio: Number(precio), cantidad: 1 }]);
+      onNotify && onNotify(`Se agregó "${nombre}" al carrito ✅`);
+    }
   };
 
-  const eliminarDelCarrito = (index) => setCarrito(carrito.filter((_, i) => i !== index));
-  const vaciarCarrito = () => setCarrito([]);
-  const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+  // Eliminar producto por id
+  const eliminarDelCarrito = (id) => {
+    setCarrito(carrito.filter(p => p.id !== id));
+    onNotify && onNotify('Producto eliminado del carrito 🗑️');
+  };
+
+  // Actualizar cantidad por id
+  const actualizarCantidad = (id, cantidad) => {
+    if (cantidad < 1) return;
+    const nuevoCarrito = carrito.map(p => p.id === id ? { ...p, cantidad } : p);
+    setCarrito(nuevoCarrito);
+  };
+
+  // Vaciar carrito completo
+  const vaciarCarrito = () => {
+    setCarrito([]);
+    onNotify && onNotify('Carrito vacío 🧹');
+  };
+
+  // Calcular total sumando precio * cantidad
+  const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
   return (
-    <CarritoContext.Provider value={{ carrito, anadirAlCarrito, eliminarDelCarrito, vaciarCarrito, total }}>
+    <CarritoContext.Provider value={{ carrito, anadirAlCarrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito, total }}>
       {children}
     </CarritoContext.Provider>
   );
 };
+

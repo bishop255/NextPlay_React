@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { useCarrito } from "../context/useCarrito.jsx";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro }) => {
   const { carrito } = useCarrito();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleCarritoClick = () => {
+    navigate('/carrito');
+  };
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -61,7 +66,7 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro }) => {
 
           {/* Botones */}
           <div className="d-flex align-items-center">
-            <a className="btn btn-outline-light me-2" href="/carrito">
+            <a className="btn btn-outline-light me-2" onClick={handleCarritoClick}>
               <i className="bi bi-cart"></i> Carrito ({carrito?.length || 0})
             </a>
             <button className="btn btn-outline-light me-2" onClick={onOpenLogin}>
