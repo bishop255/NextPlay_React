@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
+
 export const ProductCardView = ({ name, description, price, image, onAddToCart }) => {
   return (
     <div className="card" style={{ width: "20rem" }}>
-      <div style={{ height: "px", overflow: "hidden" }}>
+      <div style={{ height: "300px", overflow: "hidden" }}>
         <img
           src={image}
           alt={name}

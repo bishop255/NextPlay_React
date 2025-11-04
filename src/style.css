@@ -200,25 +200,28 @@ header h1 .h1-index{
 .productos {
   margin-top: 20px;
   font-family: 'Orbitron', sans-serif;
-  align-items: center;
   text-align: center;
   font-size: 50px;
   color: white;
 }
 
-.col-4 {
-  flex: 0 0 320px;       /* ancho fijo para cada card */
-  max-width: 320px;
-  margin: 35px 10px 0 20px; /* margen superior y lateral para separación */
-  display: flex;
-  justify-content: right; 
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  padding: 24px 0 40px 0;
+  max-width: 1200px;
+  margin: 0 auto;             /* centra el grid */
+  width: 100%;
+  justify-items: center;      /* centra cards en su celda */
 }
 
 .card {
   border: 1px solid #ccc;
   padding: 10px;
-  width: 100%;           /* ocupa todo el ancho según col-4 */
+  width: 100%;
   max-width: 320px;
+  min-width: 240px;
   text-align: center;
   border-radius: 10px;
   background: #fff;
@@ -226,24 +229,19 @@ header h1 .h1-index{
   transition: box-shadow 0.3s ease;
 }
 
-
 .card:hover {
   box-shadow: 0 0 30px #00ff9d, 0 0 60px #9b30ff;
 }
-
 
 .card-body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Empuja el contenido abajo */
+  justify-content: flex-end;
 }
 
+.card-title,
 .card-text {
-  color: #121212;
-}
-
-.card-title {
   color: #121212;
 }
 

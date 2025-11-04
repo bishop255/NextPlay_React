@@ -33,6 +33,7 @@ export const products = [
         name: 'Persona 5 Royal',
         description: 'Juego base',
         price: 14990
+
     },
     {
         image: "/img/minecraft.jpg",
@@ -40,5 +41,6 @@ export const products = [
         name: 'Minecraft',
         description: 'Juego base',
         price: 15990
+
     },
 ]

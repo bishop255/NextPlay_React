@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
 
-export const LoginSidebar = ({ isOpen, onClose }) => {
+export const LoginSidebar = ({ isOpen, onClose, OnSwitchToRegistro }) => {
   const [form, setForm] = useState({ email: "", password: "", remember: false });
 
   const handleSubmit = (e) => {
@@ -72,8 +72,8 @@ export const LoginSidebar = ({ isOpen, onClose }) => {
             </button>
 
             <div className="sidebar-footer">
-              ¿No tienes cuenta?{" "}
-              <button type="button" className="btn-link-neon" onClick={onClose}>
+              ¿No tienes cuenta?{""}
+              <button type="button" className="btn-link-neon" onClick={OnSwitchToRegistro}>
                 Regístrate aquí
               </button>
             </div>
