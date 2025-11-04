@@ -1,39 +1,50 @@
 import Carousel from 'react-bootstrap/Carousel';
+import { useItemsCart } from '../hooks/useItemsCart';
 
 export const Carrusel = () => {
-  const anadirAlCarrito = (producto, precio) => {
-    console.log(`Añadido: ${producto} por $${precio}`);
-  };
+  const { handlerAddProductCart } = useItemsCart();
+
+  const productosCarrusel = [
+    {
+      id: 1,
+      nombre: 'EA SPORTS FC Ultimate Edition',
+      precio: 52990,
+      imagen: '/img/ea.png'
+    },
+    {
+      id: 2,
+      nombre: 'Battlefield 6',
+      precio: 56990,
+      imagen: '/img/battle.png'
+    },
+    {
+      id: 3,
+      nombre: 'Pokémon Scarlet (Nintendo Switch)',
+      precio: 29990,
+      imagen: '/img/scarlet-violet-169-en.jpg'
+    }
+  ];
 
   return (
     <Carousel>
-      <Carousel.Item>
-        <img className="d-block w-100" src="/img/ea.png" alt="EA Sports" />
-        <Carousel.Caption>
-          <h3>$52.990</h3>
-          <button className="btn-carrusel" onClick={() => anadirAlCarrito("EA SPORTS FC Ultimate Edition", 52990)}>
-            RESERVA YA!
-          </button>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img className="d-block w-100" src="img/battle.png" alt="Battlefield 6" />
-        <Carousel.Caption>
-          <h3>$56.990</h3>
-          <button className="btn-carrusel" onClick={() => anadirAlCarrito("Battlefield 6", 56990)}>
-            RESERVA YA!
-          </button>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img className="d-block w-100" src="img/scarlet-violet-169-en.jpg" alt="Pokémon Scarlet" />
-        <Carousel.Caption>
-          <h3>$29.990</h3>
-          <button className="btn-carrusel" onClick={() => anadirAlCarrito("Pokémon Scarlet (Nintendo Switch)", 29990)}>
-            COMPRAR YA!
-          </button>
-        </Carousel.Caption>
-      </Carousel.Item>
+      {productosCarrusel.map((producto) => (
+        <Carousel.Item key={producto.id}>
+          <img
+            className="d-block w-100"
+            src={producto.imagen}
+            alt={producto.nombre}
+          />
+          <Carousel.Caption>
+            <h3>${producto.precio.toLocaleString()}</h3>
+            <button
+              className="btn-carrusel"
+              onClick={() => handlerAddProductCart(producto)}
+            >
+              RESERVA YA!
+            </button>
+          </Carousel.Caption>
+        </Carousel.Item>
+      ))}
     </Carousel>
   );
 };

@@ -1,10 +1,15 @@
 import React from "react";
 import { useCarrito } from "../context/useCarrito";
-import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 export const Carrito = ({ onOpenLogin, onOpenRegistro, onNotify }) => {
   const { carrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito, total } = useCarrito();
+  const navigate = useNavigate();
+
+  const handleSeguirComprando = () => {
+    navigate("/");
+  }
 
   const handlePagar = () => {
     if (carrito.length === 0) {
@@ -26,7 +31,7 @@ export const Carrito = ({ onOpenLogin, onOpenRegistro, onNotify }) => {
 
   return (
     <>
-      <Navbar onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />
+      
       <div style={{ textAlign: 'center', margin: '20px 0' }}>
         <h2>🛒 Carrito de Compras</h2>
       </div>
@@ -69,11 +74,10 @@ export const Carrito = ({ onOpenLogin, onOpenRegistro, onNotify }) => {
         </table>
         <p className="fs-4 text-center">TOTAL: {total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</p>
         <div className="d-flex gap-2 justify-content-center">
-          <a href="/" className="btn btn-outline-primary">Seguir comprando</a>
+          <a className="btn btn-outline-primary" onClick={handleSeguirComprando}>Seguir comprando</a>
           <button className="btn btn-success" onClick={handlePagar}>Finalizar Compra</button>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

@@ -9,6 +9,10 @@ import { RegistroSidebar } from "./components/RegistroSidebar";
 import { Carrito } from "./pages/Carrito";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import  PageTemplate  from "./pages/PageTemplate";
+
+
 
 const CartApp = () => {
   const [isLoginOpen, SetIsLoginOpen] = useState(false);
@@ -61,6 +65,20 @@ const CartApp = () => {
           </div>
         ) : null}
         <Navbar onOpenLogin={handleOpenLogin} onOpenRegistro={handleOpenRegistro} />
+        <Routes>
+          <Route
+          path="/comunidad"
+          element={<PageTemplate title="Comunidad" onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />}
+        />
+        <Route
+          path="/acerca"
+          element={<PageTemplate title="Acerca De" onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />}
+        />
+        <Route
+          path="/soporte"
+          element={<PageTemplate title="Soporte" onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />}
+        />
+        </Routes>
         <LoginSidebar
           isOpen={isLoginOpen}
           onClose={handleCloseLogin}

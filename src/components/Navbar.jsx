@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useCarrito } from "../context/useCarrito.jsx";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-
-export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro }) => {
+export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout }) => {
   const { carrito } = useCarrito();
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const handleCarritoClick = () => {
-    navigate('/carrito');
+    navigate("/carrito");
   };
 
   const handleChange = (e) => {
@@ -21,14 +21,14 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro }) => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
         {/* Logo */}
-        <a className="navbar-brand d-flex align-items-center" href="/">
+        <Link to="/" className="navbar-brand d-flex align-items-center">
           <img
             src="/img/logo_web1.png"
             alt="Logo"
             className="logo-index"
             style={{ width: "90px", height: "90px", objectFit: "contain" }}
           />
-        </a>
+        </Link>
 
         {/* Botón de colapso */}
         <button
@@ -47,10 +47,26 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro }) => {
         <div className="collapse navbar-collapse" id="navbarNav">
           {/* Menú principal */}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item"><a className="nav-link active" href="/">Tienda</a></li>
-            <li className="nav-item"><a className="nav-link" href="/comunidad">Comunidad</a></li>
-            <li className="nav-item"><a className="nav-link" href="/acerca">Acerca De</a></li>
-            <li className="nav-item"><a className="nav-link" href="/soporte">Soporte</a></li>
+            <li className="nav-item">
+              <Link className="nav-link active" to="/">
+                Tienda
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/comunidad">
+                Comunidad
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/acerca">
+                Acerca De
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/soporte">
+                Soporte
+              </Link>
+            </li>
           </ul>
 
           {/* Buscador */}
@@ -66,15 +82,31 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro }) => {
 
           {/* Botones */}
           <div className="d-flex align-items-center">
-            <a className="btn btn-outline-light me-2" onClick={handleCarritoClick}>
+            <button
+              className="btn btn-outline-light me-2"
+              onClick={handleCarritoClick}
+              type="button"
+            >
               <i className="bi bi-cart"></i> Carrito ({carrito?.length || 0})
-            </a>
-            <button className="btn btn-outline-light me-2" onClick={onOpenLogin}>
-              Login
             </button>
-            <button className="btn btn-success" onClick={onOpenRegistro}>
-              Registro
-            </button>
+
+            {user ? (
+              <>
+                <span className="text-light me-3">Hola, {user.username}</span>
+                <button className="btn btn-danger" onClick={onLogout}>
+                  Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="btn btn-outline-light me-2" onClick={onOpenLogin}>
+                  Login
+                </button>
+                <button className="btn btn-success" onClick={onOpenRegistro}>
+                  Registro
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
