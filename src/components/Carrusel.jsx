@@ -6,19 +6,19 @@ export const Carrusel = () => {
 
   const productosCarrusel = [
     {
-      id: 1,
+      id: 7,
       nombre: 'EA SPORTS FC Ultimate Edition',
       precio: 52990,
       imagen: '/img/ea.png'
     },
     {
-      id: 2,
+      id: 8,
       nombre: 'Battlefield 6',
       precio: 56990,
       imagen: '/img/battle.png'
     },
     {
-      id: 3,
+      id: 9,
       nombre: 'Pokémon Scarlet (Nintendo Switch)',
       precio: 29990,
       imagen: '/img/scarlet-violet-169-en.jpg'

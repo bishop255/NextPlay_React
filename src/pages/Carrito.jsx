@@ -2,6 +2,7 @@ import React from "react";
 import { useCarrito } from "../context/useCarrito";
 import { Footer } from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const Carrito = ({ onOpenLogin, onOpenRegistro, onNotify }) => {
   const { carrito, eliminarDelCarrito, actualizarCantidad, vaciarCarrito, total } = useCarrito();
@@ -11,16 +12,27 @@ export const Carrito = ({ onOpenLogin, onOpenRegistro, onNotify }) => {
     navigate("/");
   }
 
-  const handlePagar = () => {
-    if (carrito.length === 0) {
-      onNotify && onNotify("Carrito vacío");
-      return;
-    }
-    if (window.confirm("¿Finalizar compra?")) {
-      onNotify && onNotify("🎉 ¡Felicidades por su compra! 🎉");
-      vaciarCarrito();
-    }
-  };
+const handlePagar = async () => {
+  if (carrito.length === 0) {
+    onNotify && onNotify("Carrito vacío");
+    return;
+  }
+  
+  const result = await Swal.fire({
+    title: "Confirmar compra",
+    text: "¿Quieres finalizar la compra?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Sí, comprar",
+    cancelButtonText: "Cancelar",
+  });
+
+  if (result.isConfirmed) {
+    vaciarCarrito();
+    onNotify && onNotify("🎉 ¡Felicidades por su compra! 🎉");
+  }
+};
+
 
   const handleCantidadChange = (id, e) => {
     const cantidad = Number(e.target.value);

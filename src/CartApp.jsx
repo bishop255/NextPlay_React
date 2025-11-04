@@ -1,43 +1,29 @@
-import { Routes, Route } from "react-router-dom";
-import { CarritoProvider } from "./context/useCarrito";
-import { CatalogView } from "./components/CatalogView";
-import { Navbar } from "./components/Navbar";
-import { Carrusel } from "./components/Carrusel";
-import { LoginSidebar } from "./components/LoginSidebar";
-import { Footer } from "./components/Footer";
-import { RegistroSidebar } from "./components/RegistroSidebar";
-import { Carrito } from "./pages/Carrito";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import  PageTemplate  from "./pages/PageTemplate";
+import { Routes, Route } from "react-router-dom";
 
-
+import { CarritoProvider } from "./context/useCarrito";
+import { Navbar } from "./components/Navbar";
+import { LoginSidebar } from "./components/LoginSidebar";
+import { RegistroSidebar } from "./components/RegistroSidebar";
+import { CatalogView } from "./components/CatalogView";
+import { Carrusel } from "./components/Carrusel";
+import { Footer } from "./components/Footer";
+import { Carrito } from "./pages/Carrito";
+import { PageTemplate } from "./pages/PageTemplate"; // asegúrate que exista en src/pages/PageTemplate.jsx
 
 const CartApp = () => {
-  const [isLoginOpen, SetIsLoginOpen] = useState(false);
-  const [isRegistroOpen, SetIsRegistroOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegistroOpen, setIsRegistroOpen] = useState(false);
 
-  const handleOpenLogin = () => SetIsLoginOpen(true);
-  const handleCloseLogin = () => SetIsLoginOpen(false);
-  const handleOpenRegistro = () => SetIsRegistroOpen(true);
-  const handleCloseRegistro = () => SetIsRegistroOpen(false);
+  // 🔄 Recuperar usuario del localStorage
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) setUser(JSON.parse(savedUser));
+  }, []);
 
-  const handleSwitchToRegistro = () => {
-    SetIsLoginOpen(false);
-    SetIsRegistroOpen(true);
-  };
-  const handleSwitchToLogin = () => {
-    SetIsRegistroOpen(false);
-    SetIsLoginOpen(true);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
-
+  // 🔐 Login
   const handlerLogin = ({ username, password }) => {
     if (username === "test" && password === "1234") {
       setUser({ username });
@@ -48,51 +34,51 @@ const CartApp = () => {
     return false;
   };
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) setUser(JSON.parse(savedUser));
-  }, []);
+  // 🚪 Logout
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
+
+  // 🔧 Handlers para abrir/cerrar modales
+  const openLogin = () => setIsLoginOpen(true);
+  const closeLogin = () => setIsLoginOpen(false);
+  const openRegistro = () => setIsRegistroOpen(true);
+  const closeRegistro = () => setIsRegistroOpen(false);
 
   return (
-    <CarritoProvider>
-      <nav>
-        {user ? (
-          <div>
-            Bienvenido, {user.username}
-            <button onClick={handleLogout} className="btn-neon-red">
-              Cerrar sesión
-            </button>
-          </div>
-        ) : null}
-        <Navbar onOpenLogin={handleOpenLogin} onOpenRegistro={handleOpenRegistro} />
-        <Routes>
-          <Route
-          path="/comunidad"
-          element={<PageTemplate title="Comunidad" onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />}
-        />
-        <Route
-          path="/acerca"
-          element={<PageTemplate title="Acerca De" onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />}
-        />
-        <Route
-          path="/soporte"
-          element={<PageTemplate title="Soporte" onOpenLogin={onOpenLogin} onOpenRegistro={onOpenRegistro} />}
-        />
-        </Routes>
-        <LoginSidebar
-          isOpen={isLoginOpen}
-          onClose={handleCloseLogin}
-          onSwitchToRegistro={handleSwitchToRegistro}
-          handlerLogin={handlerLogin}
-        />
-        <RegistroSidebar
-          isOpen={isRegistroOpen}
-          onClose={handleCloseRegistro}
-          onSwitchToLogin={handleSwitchToLogin}
-        />
-      </nav>
+    <CarritoProvider user={user} onNotify={(msg) => Swal.fire(msg)}>
+      {/* NAVBAR */}
+      <Navbar
+        onOpenLogin={openLogin}
+        onOpenRegistro={openRegistro}
+        user={user}
+        onLogout={handleLogout}
+      />
 
+      {/* SIDEBARS */}
+      <LoginSidebar
+        isOpen={isLoginOpen}
+        onClose={closeLogin}
+        handlerLogin={handlerLogin}
+        onSwitchToRegistro={() => {
+          closeLogin();
+          openRegistro();
+        }}
+      />
+
+      <RegistroSidebar
+        isOpen={isRegistroOpen}
+        onClose={closeRegistro}
+        onSwitchToLogin={() => {
+          closeRegistro();
+          openLogin();
+        }}
+      />
+
+      {/* RUTAS */}
       <Routes>
+        {/* Página principal */}
         <Route
           path="/"
           element={
@@ -105,17 +91,33 @@ const CartApp = () => {
             </>
           }
         />
+
+        {/* Carrito */}
         <Route
           path="/carrito"
-          element={<Carrito onOpenLogin={handleOpenLogin} onOpenRegistro={handleOpenRegistro} />}
+          element={<Carrito onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
+        />
+
+        {/* Otras secciones */}
+        <Route
+          path="/comunidad"
+          element={<PageTemplate title="Comunidad" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
+        />
+        <Route
+          path="/acerca"
+          element={<PageTemplate title="Acerca De" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
+        />
+        <Route
+          path="/soporte"
+          element={<PageTemplate title="Soporte" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
         />
       </Routes>
 
-      <footer>
-        <Footer />
-      </footer>
+      {/* FOOTER */}
+      <Footer />
     </CarritoProvider>
   );
 };
 
 export default CartApp;
+
