@@ -1,26 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCarrito } from "../context/useCarrito.jsx";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout }) => {
+export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout, onOpenCart }) => {
   const { carrito } = useCarrito();
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const handleCarritoClick = () => {
-    navigate("/carrito");
-  };
-
+  // no esta disponible esta funcion xD // 
   const handleChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
     if (onSearch) onSearch(value);
   };
 
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        {/* Logo */}
         <Link to="/" className="navbar-brand d-flex align-items-center">
           <img
             src="/img/logo_web1.png"
@@ -30,7 +27,7 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout }
           />
         </Link>
 
-        {/* Botón de colapso */}
+        
         <button
           className="navbar-toggler"
           type="button"
@@ -43,33 +40,17 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout }
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Contenido */}
+        
         <div className="collapse navbar-collapse" id="navbarNav">
-          {/* Menú principal */}
+          
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link active" to="/">
-                Tienda
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/comunidad">
-                Comunidad
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/acerca">
-                Acerca De
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/soporte">
-                Soporte
-              </Link>
-            </li>
+            <li className="nav-item"><Link className="nav-link active" to="/">Tienda</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/comunidad">Comunidad</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/acerca">Acerca De</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/soporte">Soporte</Link></li>
           </ul>
 
-          {/* Buscador */}
+          //no disponible//
           <form className="search-index me-3" onSubmit={(e) => e.preventDefault()}>
             <input
               className="form-control"
@@ -80,12 +61,11 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout }
             />
           </form>
 
-          {/* Botones */}
+        
           <div className="d-flex align-items-center">
             <button
               className="btn btn-outline-light me-2"
-              onClick={handleCarritoClick}
-              type="button"
+              onClick={onOpenCart}
             >
               <i className="bi bi-cart"></i> Carrito ({carrito?.length || 0})
             </button>
@@ -99,10 +79,16 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout }
               </>
             ) : (
               <>
-                <button className="btn btn-outline-light me-2" onClick={onOpenLogin}>
+                <button
+                  className="btn btn-outline-light me-2"
+                  onClick={onOpenLogin}
+                >
                   Login
                 </button>
-                <button className="btn btn-success" onClick={onOpenRegistro}>
+                <button
+                  className="btn btn-success"
+                  onClick={onOpenRegistro}
+                >
                   Registro
                 </button>
               </>

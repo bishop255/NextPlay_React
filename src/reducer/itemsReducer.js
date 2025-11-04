@@ -8,7 +8,7 @@ import {
 export const itemsReducer = (state = [], action) => {
   switch (action.type) {
     case AddProductCart:
-      // Agregar nuevo producto
+      
       return [
         ...state,
         {
@@ -19,7 +19,7 @@ export const itemsReducer = (state = [], action) => {
       ];
 
     case UpdateQuantityProductCart:
-      // Si el producto ya existe, aumenta la cantidad
+      
       return state.map((item) =>
         item.product.id === action.payload.id
           ? {
@@ -31,7 +31,7 @@ export const itemsReducer = (state = [], action) => {
       );
 
     case DeleteProductCart:
-      // Eliminar producto por id
+  
       return state.filter((item) => item.product.id !== action.payload);
 
     case ClearCart:

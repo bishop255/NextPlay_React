@@ -10,20 +10,21 @@ import { CatalogView } from "./components/CatalogView";
 import { Carrusel } from "./components/Carrusel";
 import { Footer } from "./components/Footer";
 import { Carrito } from "./pages/Carrito";
-import { PageTemplate } from "./pages/PageTemplate"; // asegúrate que exista en src/pages/PageTemplate.jsx
+import { PageTemplate } from "./pages/PageTemplate";
+import { CartSidebar } from "./components/CartSidebar";
 
 const CartApp = () => {
   const [user, setUser] = useState(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegistroOpen, setIsRegistroOpen] = useState(false);
 
-  // 🔄 Recuperar usuario del localStorage
+  // Recuperar usuario del localStorage
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
-  // 🔐 Login
+  //  Login
   const handlerLogin = ({ username, password }) => {
     if (username === "test" && password === "1234") {
       setUser({ username });
@@ -34,29 +35,35 @@ const CartApp = () => {
     return false;
   };
 
-  // 🚪 Logout
+  //  Logout
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
   };
 
-  // 🔧 Handlers para abrir/cerrar modales
+
   const openLogin = () => setIsLoginOpen(true);
   const closeLogin = () => setIsLoginOpen(false);
   const openRegistro = () => setIsRegistroOpen(true);
   const closeRegistro = () => setIsRegistroOpen(false);
 
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleOpenCart = () => setIsCartOpen(true);
+  const handleCloseCart = () => setIsCartOpen(false);
+
   return (
     <CarritoProvider user={user} onNotify={(msg) => Swal.fire(msg)}>
-      {/* NAVBAR */}
+
       <Navbar
         onOpenLogin={openLogin}
         onOpenRegistro={openRegistro}
         user={user}
         onLogout={handleLogout}
+        onOpenCart={handleOpenCart} 
       />
 
-      {/* SIDEBARS */}
       <LoginSidebar
         isOpen={isLoginOpen}
         onClose={closeLogin}
@@ -75,10 +82,12 @@ const CartApp = () => {
           openLogin();
         }}
       />
+      <CartSidebar 
+      isOpen={isCartOpen} 
+      onClose={handleCloseCart} 
+      />
 
-      {/* RUTAS */}
       <Routes>
-        {/* Página principal */}
         <Route
           path="/"
           element={
@@ -92,13 +101,13 @@ const CartApp = () => {
           }
         />
 
-        {/* Carrito */}
+
         <Route
           path="/carrito"
           element={<Carrito onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
         />
 
-        {/* Otras secciones */}
+
         <Route
           path="/comunidad"
           element={<PageTemplate title="Comunidad" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
@@ -113,7 +122,7 @@ const CartApp = () => {
         />
       </Routes>
 
-      {/* FOOTER */}
+
       <Footer />
     </CarritoProvider>
   );

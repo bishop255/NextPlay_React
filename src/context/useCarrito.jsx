@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
+// se crea el contexto
 const CarritoContext = createContext();
+
 
 export const useCarrito = () => {
   const context = useContext(CarritoContext);
@@ -8,68 +10,56 @@ export const useCarrito = () => {
   return context;
 };
 
-export const CarritoProvider = ({ children, user, onNotify }) => {
-  const [carrito, setCarrito] = useState([]);
 
-  // Cargar carrito desde localStorage al iniciar
-  useEffect(() => {
-    const saved = localStorage.getItem("carrito");
-    if (saved) setCarrito(JSON.parse(saved));
-  }, []);
-
-  // Guardar carrito en localStorage al cambiar
-  useEffect(() => {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }, [carrito]);
-
-  // Vaciar carrito cuando user cambia (log in/log out)
-  useEffect(() => {
-    setCarrito([]);
-  }, [user]);
-
-  const anadirAlCarrito = (id, nombre, precio) => {
-    const index = carrito.findIndex((p) => p.id === id);
-    if (index !== -1) {
-      const nuevoCarrito = [...carrito];
-      nuevoCarrito[index].cantidad += 1;
-      setCarrito(nuevoCarrito);
-      onNotify && onNotify(`Cantidad incrementada de "${nombre}" ✅`);
-    } else {
-      setCarrito([...carrito, { id, nombre, precio: Number(precio), cantidad: 1 }]);
-      onNotify && onNotify(`Se agregó "${nombre}" al carrito ✅`);
+export const CarritoProvider = ({ children }) => {
+  const [carrito, setCarrito] = useState(() => {
+    try {
+      const saved = localStorage.getItem("carrito");
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error("❌ Error al cargar carrito desde localStorage:", error);
+      return [];
     }
-  };
+  });
 
-  const eliminarDelCarrito = (id) => {
-    setCarrito(carrito.filter((p) => p.id !== id));
-    onNotify && onNotify("Producto eliminado del carrito 🗑️");
-  };
-
-  const actualizarCantidad = (id, cantidad) => {
-    if (cantidad < 1) return;
-    const nuevoCarrito = carrito.map((p) => (p.id === id ? { ...p, cantidad } : p));
+  // se guarda cada vez que se genere un cambio
+  const guardarCarrito = (nuevoCarrito) => {
     setCarrito(nuevoCarrito);
+    localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
   };
 
-  const vaciarCarrito = () => {
-    setCarrito([]);
-    onNotify && onNotify("Carrito vacío 🧹");
+  // Agregar producto
+  const addToCart = (producto) => {
+    const existe = carrito.find((p) => p.id === producto.id);
+    if (existe) {
+      const confirmar = window.confirm(`El producto "${producto.name}" ya está en el carrito. ¿Agregar de nuevo?`);
+      if (!confirmar) return;
+    }
+    const nuevo = [...carrito, producto];
+    guardarCarrito(nuevo);
+    alert(`✅ Se agregó "${producto.name}" al carrito`);
   };
 
-  const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+  // Eliminar producto
+  const removeFromCart = (index) => {
+    const nuevo = carrito.filter((_, i) => i !== index);
+    guardarCarrito(nuevo);
+  };
+
+  // Vaciar carrito
+  const clearCart = () => {
+    guardarCarrito([]);
+  };
+
+  // Total
+  const total = carrito.reduce((acc, item) => acc + (item.price || 0), 0);
 
   return (
     <CarritoContext.Provider
-      value={{
-        carrito,
-        anadirAlCarrito,
-        eliminarDelCarrito,
-        actualizarCantidad,
-        vaciarCarrito,
-        total,
-      }}
+      value={{ carrito, addToCart, removeFromCart, clearCart, total }}
     >
       {children}
     </CarritoContext.Provider>
   );
 };
+
