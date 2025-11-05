@@ -50,7 +50,7 @@ export const Navbar = ({ onSearch, onOpenLogin, onOpenRegistro, user, onLogout, 
             <li className="nav-item"><Link className="nav-link" to="/soporte">Soporte</Link></li>
           </ul>
 
-          //no disponible//
+          
           <form className="search-index me-3" onSubmit={(e) => e.preventDefault()}>
             <input
               className="form-control"
