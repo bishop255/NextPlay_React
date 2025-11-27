@@ -10,13 +10,12 @@ export const LoginSidebar = ({ isOpen, onClose, handlerLogin, onSwitchToRegistro
   const [loginForm, setLoginForm] = useState(initialLoginForm);
   const { username, password } = loginForm;
 
-  // Maneja cambios en inputs actualizado estado
   const onInputChange = ({ target }) => {
     const { name, value } = target;
     setLoginForm({ ...loginForm, [name]: value });
   };
 
-  // Al enviar el formulario
+  // enviar al formualrio
   const onSubmit = (event) => {
     event.preventDefault();
 
@@ -26,10 +25,9 @@ export const LoginSidebar = ({ isOpen, onClose, handlerLogin, onSwitchToRegistro
       return;
     }
 
-    // Ejecuta login real (pass handler desde padre)
     handlerLogin({ username, password });
 
-    // Limpia formulario y cierra sidebar
+    // Limpia formulario y cierra el sidebar
     setLoginForm(initialLoginForm);
     onClose();
   };
