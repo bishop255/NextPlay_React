@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
-import Swal from "sweetalert2";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import Swal from "sweetalert2";
 
+import { AuthProvider } from "./context/AuthContext";
 import { CarritoProvider } from "./context/useCarrito";
+
 import { Navbar } from "./components/Navbar";
 import { LoginSidebar } from "./components/LoginSidebar";
 import { RegistroSidebar } from "./components/RegistroSidebar";
@@ -12,121 +14,93 @@ import { Footer } from "./components/Footer";
 import { Carrito } from "./pages/Carrito";
 import { PageTemplate } from "./pages/PageTemplate";
 import { CartSidebar } from "./components/CartSidebar";
+import { CreateProductView } from "./components/CreateProduct";
 
 const CartApp = () => {
-  const [user, setUser] = useState(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegistroOpen, setIsRegistroOpen] = useState(false);
-
-  // Recuperar usuario del localStorage
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) setUser(JSON.parse(savedUser));
-  }, []);
-
-  //  Login
-  const handlerLogin = ({ username, password }) => {
-    if (username === "test" && password === "1234") {
-      setUser({ username });
-      localStorage.setItem("user", JSON.stringify({ username }));
-      return true;
-    }
-    Swal.fire("Error", "El usuario o la contraseña son incorrectas", "error");
-    return false;
-  };
-
-  //  Logout
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
-
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [refreshCatalog, setRefreshCatalog] = useState(0);
 
   const openLogin = () => setIsLoginOpen(true);
   const closeLogin = () => setIsLoginOpen(false);
   const openRegistro = () => setIsRegistroOpen(true);
   const closeRegistro = () => setIsRegistroOpen(false);
 
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   const handleOpenCart = () => setIsCartOpen(true);
   const handleCloseCart = () => setIsCartOpen(false);
 
+  const handleProductCreated = () => {
+    setRefreshCatalog(prev => prev + 1);
+    Swal.fire({
+      icon: "success",
+      title: "¡Producto creado!",
+      text: "El producto se ha agregado exitosamente al catálogo",
+      timer: 2000,
+    });
+  };
+
   return (
-    <CarritoProvider user={user} onNotify={(msg) => Swal.fire(msg)}>
+    <AuthProvider>
+      <CarritoProvider onNotify={(msg) => Swal.fire(msg)}>
 
-      <Navbar
-        onOpenLogin={openLogin}
-        onOpenRegistro={openRegistro}
-        user={user}
-        onLogout={handleLogout}
-        onOpenCart={handleOpenCart} 
-      />
-
-      <LoginSidebar
-        isOpen={isLoginOpen}
-        onClose={closeLogin}
-        handlerLogin={handlerLogin}
-        onSwitchToRegistro={() => {
-          closeLogin();
-          openRegistro();
-        }}
-      />
-
-      <RegistroSidebar
-        isOpen={isRegistroOpen}
-        onClose={closeRegistro}
-        onSwitchToLogin={() => {
-          closeRegistro();
-          openLogin();
-        }}
-      />
-      <CartSidebar 
-      isOpen={isCartOpen} 
-      onClose={handleCloseCart} 
-      />
-
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Carrusel />
-              <div className="container">
-                <h1 className="productos">Recomendado para ti</h1>
-                <CatalogView />
-              </div>
-            </>
-          }
+        <Navbar
+          onOpenLogin={openLogin}
+          onOpenRegistro={openRegistro}
+          onOpenCart={handleOpenCart}
         />
 
-
-        <Route
-          path="/carrito"
-          element={<Carrito onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
+        <LoginSidebar
+          isOpen={isLoginOpen}
+          onClose={closeLogin}
         />
 
-
-        <Route
-          path="/comunidad"
-          element={<PageTemplate title="Comunidad" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
+        <RegistroSidebar
+          isOpen={isRegistroOpen}
+          onClose={closeRegistro}
+          onSwitchToLogin={() => {
+            closeRegistro();
+            openLogin();
+          }}
         />
-        <Route
-          path="/acerca"
-          element={<PageTemplate title="Acerca De" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
-        />
-        <Route
-          path="/soporte"
-          element={<PageTemplate title="Soporte" onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
-        />
-      </Routes>
 
+        <CartSidebar
+          isOpen={isCartOpen}
+          onClose={handleCloseCart}
+        />
 
-      <Footer />
-    </CarritoProvider>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Carrusel />
+                <div className="container">
+                  <div className="my-4">
+                    <CreateProductView onProductCreated={handleProductCreated} />
+                  </div>
+
+                  <h1 className="productos">Recomendado para ti</h1>
+                  <CatalogView refreshCatalog={refreshCatalog} />
+                </div>
+              </>
+            }
+          />
+
+          <Route
+            path="/carrito"
+            element={<Carrito onOpenLogin={openLogin} onOpenRegistro={openRegistro} />}
+          />
+
+          <Route path="/comunidad" element={<PageTemplate title="Comunidad" />} />
+          <Route path="/acerca" element={<PageTemplate title="Acerca De" />} />
+          <Route path="/soporte" element={<PageTemplate title="Soporte" />} />
+        </Routes>
+
+        <Footer />
+      </CarritoProvider>
+    </AuthProvider>
   );
 };
 
 export default CartApp;
-

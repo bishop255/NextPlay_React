@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Swal from "sweetalert2";
+import { AuthContext } from "../context/AuthContext";
 
 const initialLoginForm = {
   email: "",
@@ -9,6 +10,9 @@ const initialLoginForm = {
 export const LoginSidebar = ({ isOpen, onClose, onSwitchToRegistro }) => {
   const [loginForm, setLoginForm] = useState(initialLoginForm);
   const { email, password } = loginForm;
+
+  // ✔️ Traemos login() del AuthContext
+  const { login } = useContext(AuthContext);
 
   const onInputChange = ({ target }) => {
     const { name, value } = target;
@@ -24,19 +28,23 @@ export const LoginSidebar = ({ isOpen, onClose, onSwitchToRegistro }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch("http://localhost:8081/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-        Swal.fire("Error", "Credenciales invalidas", "error");
+        Swal.fire("Error", "Credenciales inválidas", "error");
         return;
       }
 
       const user = await response.json();
-      Swal.fire("Bienvenido", 'Hola Gamer ${user.email}', "success");
+
+      // ✔️ Guardar usuario (solo email) en el Auth Context
+      login({ email: user.email });
+
+      Swal.fire("Bienvenido", `Hola Gamer ${user.email}`, "success");
 
       onClose();
       setLoginForm(initialLoginForm);
@@ -58,6 +66,7 @@ export const LoginSidebar = ({ isOpen, onClose, onSwitchToRegistro }) => {
           </h2>
           <button className="btn-close-sidebar" onClick={onClose}>✕</button>
         </div>
+
         <div className="sidebar-body">
           <form onSubmit={onSubmit}>
 
