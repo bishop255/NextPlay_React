@@ -1,7 +1,7 @@
 import React from "react";
 import { useCarrito } from "../context/useCarrito";
 
-export const ProductCardView = ({ product, onDelete }) => {
+export const ProductCardView = ({ product, onDelete, isAdmin }) => {
   const { addToCart } = useCarrito();
 
   if (!product) {
@@ -23,7 +23,7 @@ export const ProductCardView = ({ product, onDelete }) => {
             }}
           />
 
-          {onDelete && (
+          {isAdmin && onDelete && (
             <button
               className="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
               onClick={() => onDelete(product.id)}

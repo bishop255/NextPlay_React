@@ -42,7 +42,7 @@ export const LoginSidebar = ({ isOpen, onClose, onSwitchToRegistro }) => {
       const user = await response.json();
 
       // ✔️ Guardar usuario (solo email) en el Auth Context
-      login({ email: user.email });
+      login({ email: user.email, role: user.role });
 
       Swal.fire("Bienvenido", `Hola Gamer ${user.email}`, "success");
 

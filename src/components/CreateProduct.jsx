@@ -32,7 +32,7 @@ export const CreateProductView = ({ onProductCreated }) => {
 
   return (
     <div className="container">
-      <h3>Crear Producto</h3>
+      <h3>Agregar Producto</h3>
       <form className="w-50" onSubmit={onSubmit}>
         <input
           className="form-control mb-2"

@@ -3,7 +3,7 @@ import { getProducts, deleteProduct } from "../services/productService";
 import { ProductCardView } from "./ProductCardView";
 import Swal from "sweetalert2";
 
-export const CatalogView = ({ refreshCatalog }) => {
+export const CatalogView = ({ refreshCatalog, isAdmin }) => {
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +55,8 @@ export const CatalogView = ({ refreshCatalog }) => {
           <ProductCardView
             key={prod.id}
             product={prod}
-            onDelete={handleDelete}
+            onDelete={isAdmin ? handleDelete: undefined}
+            isAdmin={isAdmin}
           />
         ))}
       </div>
